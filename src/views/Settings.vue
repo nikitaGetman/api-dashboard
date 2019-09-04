@@ -104,11 +104,7 @@ export default {
   },
   watch: {
     activeCustomerData: function(newCustomer) {
-      if (newCustomer) {
-        this.setData(newCustomer)
-      } else {
-        this.setData({ name: '', surname: '', about: '' })
-      }
+      this.setData(newCustomer)
     }
   },
   methods: {
@@ -132,7 +128,6 @@ export default {
           about: this.about
         }
         this.$store.dispatch('createCustomer', data)
-        console.log('Add customer')
       }
     },
     updateActiveCustomer() {
@@ -144,12 +139,10 @@ export default {
           about: this.about
         }
         this.$store.dispatch('updateCustomer', data)
-        console.log('Update customer')
       }
     },
     unselectActiveCustomer() {
       this.setData({ name: '', surname: '', about: '' })
-      //   this.$store.dispatch('selectCustomer', null)
     },
     selectActiveCustomer() {
       this.setData(this.activeCustomerData)

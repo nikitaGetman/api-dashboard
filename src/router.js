@@ -36,47 +36,6 @@ const router = new Router({
       meta: {
         requiresAuth: true
       }
-      // children: [
-      //   {
-      //     path: ':customerId',
-      //     component: Dashboard,
-      //     props: true,
-      //     beforeEnter(routeTo, routeFrom, next) {
-      //       console.log('before enter for /dashboard/:customerId')
-      //       next()
-      //       store
-      //         .dispatch('fetchCustomer', routeTo.params.customerId)
-      //         .then(customer => {
-      //           routeTo.params.customer = customer
-      //           next()
-      //         })
-      //         .catch(() => {
-      //           next({ name: '404', params: { resource: 'customer' } })
-      //         })
-      //     },
-      //     children: [
-      //       {
-      //         path: ':cardId',
-      //         name: 'card-dashboard',
-      //         component: Card,
-      //         props: true,
-      //         beforeEnter(routeTo, routeFrom, next) {
-      //           console.log('before enter for /dashboard/:customerId/:cardId')
-      //           next()
-      //           // store
-      //           //   .dispatch('fetchCard', routeTo.params.cardId)
-      //           //   .then(card => {
-      //           //     routeTo.params.card = card
-      //           //     next()
-      //           //   })
-      //           //   .catch(() => {
-      //           //     next({ name: '404', params: { resource: 'API card' } })
-      //           //   })
-      //         }
-      //       }
-      //     ]
-      //   }
-      // ]
     },
     {
       path: '/settings',
@@ -85,17 +44,22 @@ const router = new Router({
       meta: {
         requiresAuth: true
       }
-      // children: [
-      //   {
-      //     path: ':customerId',
-      //     component: Settings,
-      //     props: true,
-      //     beforeEnter(routeTo, routeFrom, next) {
-      //       console.log('before enter for /settings/:customerId')
-      //       next()
-      //     }
-      //   }
-      // ]
+    },
+    {
+      path: '/card',
+      name: 'card',
+      component: Card,
+      props: true,
+      meta: {
+        requiresAuth: true
+      },
+      beforeEnter(routeTo, routeFrom, next) {
+        if (!routeTo.params.card) {
+          next({ name: 'dashboard' })
+        } else {
+          next()
+        }
+      }
     },
     {
       path: '/404',

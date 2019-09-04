@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { apiCards } from './assets/apiCardsData.js'
 
 Vue.use(Vuex)
 
@@ -26,11 +27,6 @@ export default new Vuex.Store({
     },
     CLEAR_USER_DATA() {
       localStorage.removeItem('user')
-      // TODO remove after testing
-      sessionStorage.removeItem('customersList')
-      sessionStorage.removeItem('activeCustomerId')
-      sessionStorage.removeItem('activeApiCardId')
-
       location.reload()
     },
     CREATE_CUSTOMER(state, credentials) {
@@ -40,7 +36,11 @@ export default new Vuex.Store({
     UPDATE_CUSTOMER(state, { id, credentials }) {
       for (let index in state.customers) {
         if (state.customers[index].id === id) {
-          state.customers[index] = { id, ...credentials }
+          state.customers[index] = {
+            id,
+            ...credentials,
+            cards: state.customers[index].cards
+          }
         }
       }
       state.customers = [...state.customers]
@@ -49,10 +49,6 @@ export default new Vuex.Store({
     SET_ACTIVE_CUSTOMER(state, id) {
       state.activeCustomerId = id
       sessionStorage.setItem('activeCustomerId', JSON.stringify(id))
-    },
-    SET_ACTIVE_API_CARD(state, id) {
-      state.activeApiCardId = id
-      sessionStorage.setItem('activeApiCardId', JSON.stringify(id))
     }
   },
   actions: {
@@ -60,7 +56,6 @@ export default new Vuex.Store({
       const userString = localStorage.getItem('user')
       const customersList = sessionStorage.getItem('customersList')
       const activeCustomerId = sessionStorage.getItem('activeCustomerId')
-      const activeApiCardId = sessionStorage.getItem('activeApiCardId')
 
       if (userString) {
         commit('SET_USER_DATA', JSON.parse(userString))
@@ -70,13 +65,10 @@ export default new Vuex.Store({
 
         if (activeCustomerId) {
           commit('SET_ACTIVE_CUSTOMER', JSON.parse(activeCustomerId))
-
-          if (activeApiCardId) {
-            commit('SET_ACTIVE_API_CARD', JSON.parse(activeApiCardId))
-          }
         }
       }
     },
+    // eslint-disable-next-line no-unused-vars
     login({ commit }, credentials) {
       commit('SET_USER_DATA', { token: generateToken(16) })
       // mock of succesfull API/login request
@@ -87,9 +79,21 @@ export default new Vuex.Store({
     },
     createCustomer({ state, commit }, credentials) {
       const id = state.customers.length
-      // TODO: tomorrow
-      const cards = []
-      commit('CREATE_CUSTOMER', { id, ...credentials })
+
+      // generate random list of API cards for each created customer
+      const min = 4
+      const max = apiCards.length
+      const cardsLength = Math.round(Math.random() * (max - min) + min)
+      let cards = []
+      let cardsListCopy = apiCards.slice()
+
+      for (let index = 0; index < cardsLength; index++) {
+        const randomCardIndex = Math.floor(Math.random() * cardsListCopy.length)
+        cards.push(cardsListCopy[randomCardIndex])
+        cardsListCopy.splice(randomCardIndex, 1)
+      }
+
+      commit('CREATE_CUSTOMER', { id, ...credentials, cards })
       commit('SET_ACTIVE_CUSTOMER', id)
       // mock of succesfull API/creeateCustomer request
       return new Promise(resolve => resolve())

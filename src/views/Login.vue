@@ -1,17 +1,7 @@
 <template>
   <v-container>
-    <v-row class="mt-4">
-      <v-col
-        cols="12"
-        sm="10"
-        offset-sm="1"
-        md="8"
-        offset-md="2"
-        lg="6"
-        offset-lg="3"
-        xl="4"
-        offset-xl="4"
-      >
+    <v-row class="mt-2">
+      <v-col cols="12" sm="8" offset-sm="2" class="wrapper">
         <v-card>
           <v-card-title>
             <h1 class="display-1">Login</h1>
@@ -107,4 +97,9 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.wrapper {
+  max-width: 460px;
+  margin: 0 auto;
+}
+</style>

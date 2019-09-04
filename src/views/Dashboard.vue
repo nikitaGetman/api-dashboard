@@ -15,7 +15,15 @@
           <ApiCard :card="card" :key="index"></ApiCard>
         </v-col>
       </template>
-      <v-col v-if="!cards">Nothing to show, create customer first</v-col>
+      <v-col v-if="!cards" class="text-center mt-10">
+        <div class="headline mb-6">
+          API cards list is empty. It looks like you don`t create any customer
+          yet.
+        </div>
+        <v-btn rounded outlined large :to="{ name: 'settings' }" class="link"
+          >Click to create customer</v-btn
+        >
+      </v-col>
     </v-row>
   </v-container>
 </template>
@@ -31,12 +39,12 @@ export default {
     cards() {
       return this.$store.getters['getActiveCustomerCards']
     }
-  },
-  created() {
-    // if()
-    // console.log(this.customer)
   }
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.link {
+  color: inherit;
+}
+</style>
